@@ -17,6 +17,9 @@
 #define NK_SDL3_RENDERER_IMPLEMENTATION
 #include "thirdparty/nuklear_sdl3_renderer.h"
 
+#define NK_DATA_TABLE_IMPLEMENTATION
+#include "../nuklear_data_table.h"
+
 
 struct table_row {
     int id;
@@ -35,21 +38,27 @@ static void simple_table(struct nk_context *ctx) {
     nk_flags flags = NK_WINDOW_TITLE | NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE;
     if (nk_begin(ctx, "Simple Table", nk_rect(50, 50, 800, 600), flags)) {
         size_t i = 0;
-        nk_layout_row_dynamic(ctx, 0, 4);
-        /* Table headers */
-        nk_label(ctx, "ID", NK_TEXT_LEFT);
-        nk_label(ctx, "Name", NK_TEXT_LEFT);
-        nk_label(ctx, "Quantity", NK_TEXT_LEFT);
-        nk_label(ctx, "Description", NK_TEXT_LEFT);
+        struct nk_data_table table;
 
-        /* Table rows */
-        for (i = 0; i < NK_LEN(table_rows); i++) {
-            struct table_row *row = &table_rows[i];
-            nk_labelf(ctx, NK_TEXT_LEFT, "%d", row->id);
-            nk_label(ctx, row->name, NK_TEXT_LEFT);
-            nk_labelf(ctx, NK_TEXT_LEFT, "%d", row->qty);
-            nk_label(ctx, row->desc, NK_TEXT_LEFT);
+        if (nk_data_table_begin(ctx, &table, 4)) {
+            /* Table headers */
+            nk_data_table_column(&table, "ID");
+            nk_data_table_column(&table, "Name");
+            nk_data_table_column(&table, "Quantity");
+            nk_data_table_column(&table, "Description");
+
+            /* Table rows */
+            for (i = 0; i < NK_LEN(table_rows); i++) {
+                struct table_row *row = &table_rows[i];
+                nk_data_table_cellf(&table, "%d", row->id);
+                nk_data_table_cell(&table, row->name);
+                nk_data_table_cellf(&table, "%d", row->qty);
+                nk_data_table_cell(&table, row->desc);
+
+                nk_data_table_next_row(&table);
+            }
         }
+        nk_data_table_end(&table);
     }
     nk_end(ctx);
 }
