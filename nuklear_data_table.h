@@ -26,6 +26,9 @@ void nk_data_table_cellf(struct nk_data_table *table, const char *fmt, ...);
 #ifdef NK_DATA_TABLE_IMPLEMENTATION
 
 nk_bool nk_data_table_begin(struct nk_context *ctx, struct nk_data_table *table, int col_count) {
+    const struct nk_style *style;
+    float row_height;
+
     NK_ASSERT(ctx);
     NK_ASSERT(table);
     NK_ASSERT(col_count > 0);
@@ -36,7 +39,11 @@ nk_bool nk_data_table_begin(struct nk_context *ctx, struct nk_data_table *table,
     table->row_col_count = 0;
     table->ctx = ctx;
 
-    nk_layout_row_dynamic(ctx, 0, table->decl_col_count);
+    style = &ctx->style;
+    /* TODO: Calculate row height without hard coded padding value */
+    row_height = style->font->height + (2 * 4.0f);
+
+    nk_layout_row_dynamic(ctx, row_height, table->decl_col_count);
 
     return 1;
 }
@@ -47,12 +54,20 @@ void nk_data_table_end(struct nk_data_table *table) {
 }
 
 void nk_data_table_column(struct nk_data_table *table, const char *label) {
+    struct nk_style_button header_style;
+
     NK_ASSERT(table);
     NK_ASSERT(label);
     NK_ASSERT(table->col_count < table->decl_col_count);
     if (!table || !label || table->col_count >= table->decl_col_count) return;
 
-    nk_label(table->ctx, label, NK_TEXT_LEFT);
+    header_style = table->ctx->style.button;
+    header_style.text_alignment = NK_TEXT_LEFT;
+    header_style.rounding = 0.0f;
+    header_style.border = 0.0f;
+
+    nk_button_label_styled(table->ctx, &header_style, label);
+
     table->col_count++;
 }
 
