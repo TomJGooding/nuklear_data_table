@@ -34,9 +34,9 @@ static struct table_row table_rows[] = {
     {3, "Cherry", 20, "Lorem ipsum dolor sit amet"}
 };
 
-static void simple_table(struct nk_context *ctx) {
+static void basic_table(struct nk_context *ctx) {
     nk_flags flags = NK_WINDOW_TITLE | NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE;
-    if (nk_begin(ctx, "Simple Table", nk_rect(50, 50, 800, 600), flags)) {
+    if (nk_begin(ctx, "Basic Table", nk_rect(50, 50, 800, 600), flags)) {
         size_t i = 0;
         struct nk_data_table table;
 
@@ -179,7 +179,7 @@ SDL_AppIterate(void *appstate)
 
     nk_input_end(ctx);
 
-    simple_table(ctx);
+    basic_table(ctx);
 
     SDL_SetRenderDrawColorFloat(app->renderer, app->bg.r, app->bg.g, app->bg.b, app->bg.a);
     SDL_RenderClear(app->renderer);
