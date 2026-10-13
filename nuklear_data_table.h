@@ -54,6 +54,8 @@ void nk_data_table_end(struct nk_data_table *table) {
 }
 
 void nk_data_table_column(struct nk_data_table *table, const char *label) {
+    /* TODO: When fewer table columns than declared? */
+
     struct nk_style_button header_style;
 
     NK_ASSERT(table);
@@ -72,6 +74,7 @@ void nk_data_table_column(struct nk_data_table *table, const char *label) {
 }
 
 void nk_data_table_next_row(struct nk_data_table *table) {
+    /* TODO: When fewer row columns than declared? */
     table->row_col_count = 0;
 }
 
