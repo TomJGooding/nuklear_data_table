@@ -78,10 +78,14 @@ void nk_data_table_next_row(struct nk_data_table *table) {
 void nk_data_table_cell(struct nk_data_table *table, const char *str) {
     NK_ASSERT(table);
     NK_ASSERT(str);
-    NK_ASSERT(table->row_col_count < table->decl_col_count);
-    if (!table || !str || table->row_col_count >= table->decl_col_count) return;
+    if (!table || !str) return;
+
+    if (table->row_col_count >= table->decl_col_count) {
+        nk_data_table_next_row(table);
+    }
 
     nk_label(table->ctx, str, NK_TEXT_LEFT);
+
     table->row_col_count++;
 }
 
@@ -90,8 +94,11 @@ void nk_data_table_cellf(struct nk_data_table *table, const char *fmt, ...) {
     va_list args;
 
     NK_ASSERT(table);
-    NK_ASSERT(table->row_col_count < table->decl_col_count);
-    if (!table || table->row_col_count >= table->decl_col_count) return;
+    if (!table) return;
+
+    if (table->row_col_count >= table->decl_col_count) {
+        nk_data_table_next_row(table);
+    }
 
     va_start(args, fmt);
     nk_labelfv(table->ctx, NK_TEXT_LEFT, fmt, args);

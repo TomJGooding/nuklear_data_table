@@ -55,7 +55,7 @@ static void simple_table(struct nk_context *ctx) {
                 nk_data_table_cellf(&table, "%d", row->qty);
                 nk_data_table_cell(&table, row->desc);
 
-                nk_data_table_next_row(&table);
+                /* nk_data_table_next_row(&table); */
             }
         }
         nk_data_table_end(&table);
