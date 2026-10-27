@@ -34,33 +34,29 @@ static struct table_row table_rows[] = {
     {3, "Cherry", 20, "Lorem ipsum dolor sit amet"}
 };
 
-static void basic_table(struct nk_context *ctx) {
-    nk_flags flags = NK_WINDOW_TITLE | NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE;
-    if (nk_begin(ctx, "Basic Table", nk_rect(50, 50, 800, 600), flags)) {
-        size_t i = 0;
-        struct nk_data_table table;
+static void table_basic(struct nk_context *ctx) {
+    size_t i = 0;
+    struct nk_data_table table;
 
-        if (nk_data_table_begin(ctx, &table, 4)) {
-            /* Table headers */
-            nk_data_table_column(&table, "ID");
-            nk_data_table_column(&table, "Name");
-            nk_data_table_column(&table, "Quantity");
-            nk_data_table_column(&table, "Description");
+    if (nk_data_table_begin(ctx, &table, 4)) {
+        /* Table headers */
+        nk_data_table_column(&table, "ID");
+        nk_data_table_column(&table, "Name");
+        nk_data_table_column(&table, "Quantity");
+        nk_data_table_column(&table, "Description");
 
-            /* Table rows */
-            for (i = 0; i < NK_LEN(table_rows); i++) {
-                struct table_row *row = &table_rows[i];
-                nk_data_table_cellf(&table, "%d", row->id);
-                nk_data_table_cell(&table, row->name);
-                nk_data_table_cellf(&table, "%d", row->qty);
-                nk_data_table_cell(&table, row->desc);
+        /* Table rows */
+        for (i = 0; i < NK_LEN(table_rows); i++) {
+            struct table_row *row = &table_rows[i];
+            nk_data_table_cellf(&table, "%d", row->id);
+            nk_data_table_cell(&table, row->name);
+            nk_data_table_cellf(&table, "%d", row->qty);
+            nk_data_table_cell(&table, row->desc);
 
-                /* nk_data_table_next_row(&table); */
-            }
+            /* nk_data_table_next_row(&table); */
         }
-        nk_data_table_end(&table);
     }
-    nk_end(ctx);
+    nk_data_table_end(&table);
 }
 
 
@@ -177,9 +173,17 @@ SDL_AppIterate(void *appstate)
     struct nk_sdl_app* app = (struct nk_sdl_app*)appstate;
     struct nk_context* ctx = app->ctx;
 
+    nk_flags flags = NK_WINDOW_TITLE | NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE;
+
     nk_input_end(ctx);
 
-    basic_table(ctx);
+    if (nk_begin(ctx, "Data Tables Demo", nk_rect(50, 50, 800, 600), flags)) {
+        if (nk_tree_push(ctx, NK_TREE_NODE, "Basic", NK_MAXIMIZED)) {
+            table_basic(ctx);
+            nk_tree_pop(ctx);
+        }
+    }
+    nk_end(ctx);
 
     SDL_SetRenderDrawColorFloat(app->renderer, app->bg.r, app->bg.g, app->bg.b, app->bg.a);
     SDL_RenderClear(app->renderer);
